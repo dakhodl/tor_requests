@@ -49,7 +49,7 @@ module Tor
       start_params = start_parameters(uri_or_host, host, port)
       start_socks_proxy(start_params) do |http|
         request = Net::HTTP::Post.new(path)
-        request.set_form_data(post_options)
+        request.body = post_options
         Tor.configuration.headers.each do |header, value|
           request.delete(header)
           request.add_field(header, value)
