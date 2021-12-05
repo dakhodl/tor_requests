@@ -98,7 +98,7 @@ describe "Http" do
       end
     end
 
-    context "with host, path and port parameters" do
+    context "with host, path, port, header parameters" do
       it "works" do
         stub = stub_request(:post, "http://posttestserver.com/post.php?dir=example").
          with(
@@ -106,10 +106,18 @@ describe "Http" do
            headers: {
           'Accept'=>'*/*',
           'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-          'User-Agent'=>'Ruby'
+          'User-Agent'=>'Ruby',
+          'Test-Header': 'It works'
            }).
          to_return(status: 200, body: "", headers: {})
-        res = Tor::HTTP.post('posttestserver.com', {"q" => "query", "var" => "variable"}, '/post.php?dir=example', 80)
+        res = Tor::HTTP.post(
+          'posttestserver.com',
+          {"q" => "query", "var" => "variable"},
+          '/post.php?dir=example',
+          80,
+          headers: {
+            'Test-Header': 'It works'
+          })
         res.code.should eq("200")
         expect(stub).to have_been_requested
       end

@@ -36,7 +36,7 @@ module Tor
       res
     end
 
-    def self.post(uri_or_host, post_options = {}, path = nil, port = nil)
+    def self.post(uri_or_host, post_options = {}, path = nil, port = nil,  headers: {})
       res, host = "", nil
       if path
         host = uri_or_host
@@ -50,7 +50,7 @@ module Tor
       start_socks_proxy(start_params) do |http|
         request = Net::HTTP::Post.new(path)
         request.body = post_options.is_a?(String) ? post_options : post_options.to_json
-        Tor.configuration.headers.each do |header, value|
+        Tor.configuration.headers.merge(headers).each do |header, value|
           request.delete(header)
           request.add_field(header, value)
         end
