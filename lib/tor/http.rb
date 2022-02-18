@@ -10,7 +10,7 @@ module Tor
       attr_accessor :redirects_made
     end
 
-    def self.get(uri_or_host, path = nil, port = nil, max_redirects = 3)
+    def self.get(uri_or_host, path = nil, port = nil, max_redirects = 3, headers: {})
       res, host = "", nil
       self.redirects_made = 0
 
@@ -24,7 +24,7 @@ module Tor
       start_params = start_parameters(uri_or_host, host, port)
       start_socks_proxy(start_params) do |http|
         request = Net::HTTP::Get.new(path || uri_or_host.path)
-        Tor.configuration.headers.each do |header, value|
+        Tor.configuration.headers.merge(headers).each do |header, value|
           request.delete(header)
           request.add_field(header, value)
         end
